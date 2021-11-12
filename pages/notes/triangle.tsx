@@ -22,14 +22,9 @@ const TriangleNote: React.FC = () => {
       Point.from(120, 130),
     ),
     Triangle.from(
-      Point.from(170, 30),
-      Point.from(170, 130),
-      Point.from(320, 210),
-    ),
-    Triangle.from(
-      Point.from(420, 30),
-      Point.from(320, 130),
-      Point.from(420, 130),
+      Point.from(220, 150),
+      Point.from(280, 310),
+      Point.from(30, 280),
     ),
   ])
 
@@ -130,9 +125,9 @@ const TriangleNote: React.FC = () => {
   return (
     <Layout>
       <Container>
-        <h1 className="text-4xl mb-8">Triangle</h1>
+        <h1 className="sm:text-4xl sm:mb-8 text-3xl mb-6">Triangle</h1>
         <div className={hoveredPoint ? 'cursor-move' : undefined}>
-          <Canvas width={640} height={320} draw={draw} />
+          <Canvas width={300} height={320} draw={draw} />
         </div>
       </Container>
     </Layout>
