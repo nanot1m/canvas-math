@@ -31,17 +31,14 @@ export function Canvas({ draw, width, height }: CanvasProps) {
     if (ctx) {
       scaleCanvas(ctx, width, height)
     }
-  }, [])
+  }, [height, width])
 
   useEffect(() => {
-    console.log('running effect')
     const ctx = canvasRef.current?.getContext('2d')
     if (ctx) {
-      console.log('has context, clearing canvas')
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
       const destroy = draw(ctx)
       return () => {
-        console.log('destroying')
         destroy?.()
       }
     }
@@ -54,12 +51,6 @@ export function Canvas({ draw, width, height }: CanvasProps) {
         width={width}
         height={height}
         ref={canvasRef}
-      />
-      <textarea
-        className="font-mono w-full text-sm resize-none bg-red-50"
-        readOnly
-        value={draw.toString()}
-        rows={10}
       />
     </div>
   )
