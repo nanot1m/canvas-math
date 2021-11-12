@@ -1,4 +1,4 @@
-import Container from './Container'
+import Container from './container'
 
 const Footer: React.FC = ({ children }) => {
   return (

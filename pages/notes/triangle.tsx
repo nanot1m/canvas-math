@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
-import { Canvas } from '../../components/Canvas'
-import Container from '../../components/Container'
-import Layout from '../../components/Layout'
+import { Canvas } from '../../components/canvas'
+import Container from '../../components/container'
+import Layout from '../../components/layout'
 import { Point, Triangle } from '../../lib/geometry'
 
 function useForceUpdate() {
