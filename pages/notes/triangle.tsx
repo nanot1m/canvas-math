@@ -33,8 +33,21 @@ const TriangleNote: React.FC = () => {
   function draw(ctx: CanvasRenderingContext2D) {
     const { canvas } = ctx
 
+    let isMouse = false
+
+    function handleMouseDown() {
+      isMouse = true
+    }
+    function handleMouseUp() {
+      requestAnimationFrame(() => {
+        isMouse = false
+      })
+    }
+
+    canvas.addEventListener('mousedown', handleMouseDown)
+    canvas.addEventListener('mouseup', handleMouseUp)
+
     function handlePointerDown(e: PointerEvent) {
-      e.preventDefault()
       const { clientX, clientY } = e
       const x = clientX - canvas.offsetLeft
       const y = clientY - canvas.offsetTop
@@ -73,6 +86,9 @@ const TriangleNote: React.FC = () => {
       function handlePointerUp() {
         canvas.removeEventListener('pointermove', handlePointerMove)
         canvas.removeEventListener('pointerup', handlePointerUp)
+        if (!isMouse) {
+          setHoveredPoint(null)
+        }
       }
 
       canvas.addEventListener('pointermove', handlePointerMove)
@@ -100,7 +116,9 @@ const TriangleNote: React.FC = () => {
       }
 
       if (targetPoint) {
-        setHoveredPoint(targetPoint)
+        if (hoveredPoint === null) {
+          setHoveredPoint(targetPoint)
+        }
       } else {
         setHoveredPoint(null)
       }
@@ -119,6 +137,8 @@ const TriangleNote: React.FC = () => {
     return () => {
       canvas.removeEventListener('pointerdown', handlePointerDown)
       canvas.removeEventListener('pointermove', handlePointerMove)
+      canvas.removeEventListener('mousedown', handleMouseDown)
+      canvas.removeEventListener('mouseup', handleMouseUp)
     }
   }
 
