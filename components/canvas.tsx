@@ -48,6 +48,7 @@ export function Canvas({ draw, width, height }: CanvasProps) {
     <div>
       <canvas
         className="border bg-white mb-4"
+        style={{ touchAction: 'none' }}
         width={width}
         height={height}
         ref={canvasRef}
