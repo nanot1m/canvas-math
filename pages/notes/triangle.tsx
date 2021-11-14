@@ -29,6 +29,32 @@ const TriangleNote: React.FC = () => {
   ])
 
   const [hoveredPoint, setHoveredPoint] = useState<Point | null>(null)
+  const [hoveredTriangle, setHoveredTriangle] = useState<Triangle | null>(null)
+
+  function getHoveredObjects(
+    x: number,
+    y: number,
+  ): { point: Point | null; triangle: Triangle | null } {
+    let targetPoint: Point | undefined
+    let hoveredTriangle: Triangle | undefined
+    for (const triangle of triangles) {
+      const points = [triangle.a, triangle.b, triangle.c]
+
+      if (triangle.contains(Point.from(x, y))) {
+        hoveredTriangle = triangle
+      }
+
+      targetPoint = points.find((point) => {
+        const distance = point.squareDistanceTo(Point.from(x, y))
+        return distance < POINT_TOUCH_RADIUS * POINT_TOUCH_RADIUS
+      })
+      if (targetPoint) {
+        break
+      }
+    }
+
+    return { point: targetPoint ?? null, triangle: hoveredTriangle ?? null }
+  }
 
   function draw(ctx: CanvasRenderingContext2D) {
     const { canvas } = ctx
@@ -49,35 +75,31 @@ const TriangleNote: React.FC = () => {
 
     function handlePointerDown(e: PointerEvent) {
       const { clientX, clientY } = e
-      const x = clientX - canvas.offsetLeft
-      const y = clientY - canvas.offsetTop
+      const x = clientX - canvas.offsetLeft - window.scrollX
+      const y = clientY - canvas.offsetTop - window.scrollY
 
-      let targetPoint: Point | undefined
-      for (const triangle of triangles) {
-        const points = [triangle.a, triangle.b, triangle.c]
-        targetPoint = points.find((point) => {
-          const distance = point.squareDistanceTo(Point.from(x, y))
-          return distance < POINT_TOUCH_RADIUS * POINT_TOUCH_RADIUS
-        })
-        if (targetPoint) {
-          break
-        }
-      }
+      const { point: targetPoint, triangle: targetTriangle } =
+        getHoveredObjects(x, y)
 
       let prevX = x
       let prevY = y
       function handlePointerMove(e: PointerEvent) {
-        if (!targetPoint) {
-          return
-        }
         e.preventDefault()
         const { clientX, clientY } = e
-        const x = clientX - canvas.offsetLeft
-        const y = clientY - canvas.offsetTop
+        const x = clientX - canvas.offsetLeft - window.scrollX
+        const y = clientY - canvas.offsetTop - window.scrollY
         const dx = x - prevX
         const dy = y - prevY
-        targetPoint.x += dx
-        targetPoint.y += dy
+        if (targetPoint) {
+          targetPoint.x += dx
+          targetPoint.y += dy
+        } else if (targetTriangle) {
+          const points = [targetTriangle.a, targetTriangle.b, targetTriangle.c]
+          for (const point of points) {
+            point.x += dx
+            point.y += dy
+          }
+        }
         forceUpdate()
         prevX = x
         prevY = y
@@ -100,12 +122,18 @@ const TriangleNote: React.FC = () => {
     function handlePointerMove(e: PointerEvent) {
       e.preventDefault()
       const { clientX, clientY } = e
-      const x = clientX - canvas.offsetLeft
-      const y = clientY - canvas.offsetTop
+      const x = clientX - canvas.offsetLeft - window.scrollX
+      const y = clientY - canvas.offsetTop - window.scrollY
 
       let targetPoint: Point | undefined
+      let hoveredTriangle: Triangle | undefined
       for (const triangle of triangles) {
         const points = [triangle.a, triangle.b, triangle.c]
+
+        if (triangle.contains(Point.from(x, y))) {
+          hoveredTriangle = triangle
+        }
+
         targetPoint = points.find((point) => {
           const distance = point.squareDistanceTo(Point.from(x, y))
           return distance < POINT_TOUCH_RADIUS * POINT_TOUCH_RADIUS
@@ -119,15 +147,22 @@ const TriangleNote: React.FC = () => {
         if (hoveredPoint === null) {
           setHoveredPoint(targetPoint)
         }
+        setHoveredTriangle(null)
       } else {
         setHoveredPoint(null)
+        setHoveredTriangle(hoveredTriangle ?? null)
       }
     }
 
     canvas.addEventListener('pointermove', handlePointerMove)
 
     triangles.forEach((triangle) => {
-      triangle.drawAngles(ctx).drawShape(ctx).drawPoints(ctx)
+      triangle
+        .drawAngles(ctx)
+        .drawShape(ctx, {
+          strokeWidth: triangle === hoveredTriangle ? 3 : 1,
+        })
+        .drawPoints(ctx)
     })
 
     if (hoveredPoint) {
@@ -150,7 +185,11 @@ const TriangleNote: React.FC = () => {
       <Container>
         <h1 className="sm:text-4xl sm:mb-8 text-3xl mb-6">Triangle</h1>
         <div className="flex flex-col sm:flex-row gap-4">
-          <div className={hoveredPoint ? 'cursor-move' : undefined}>
+          <div
+            className={
+              hoveredPoint || hoveredTriangle ? 'cursor-move' : undefined
+            }
+          >
             <Canvas width={300} height={320} draw={draw} />
           </div>
           <div>

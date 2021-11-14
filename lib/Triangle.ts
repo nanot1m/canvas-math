@@ -1,4 +1,4 @@
-import { normalizeRad } from './geometry'
+import { getAngleBetween, normalizeRad } from './geometry'
 import { ShapeStyles } from './ShapeStyles'
 import { TextStyles } from './TextStyles'
 import { Point } from './Point'
@@ -10,6 +10,16 @@ export class Triangle {
     return new Triangle(a, b, c)
   }
   private constructor(public a: Point, public b: Point, public c: Point) {}
+
+  contains(p: Point): boolean {
+    const angleAPC = getAngleBetween(this.a, p, this.c)
+    const angleBPC = getAngleBetween(this.b, p, this.c)
+    const angleBPA = getAngleBetween(this.b, p, this.a)
+    const angleSum = normalizeRad(angleAPC.rad + angleBPC.rad + angleBPA.rad)
+    return (
+      Math.abs(angleSum) < 0.001 || Math.abs(angleSum - Math.PI * 2) < 0.001
+    )
+  }
 
   drawShape(ctx: CanvasRenderingContext2D, shapeStyles: ShapeStyles = {}) {
     shapeStyles = {
