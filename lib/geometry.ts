@@ -15,14 +15,30 @@ export class Point {
   public squareDistanceTo(point: Point) {
     return Math.pow(point.x - this.x, 2) + Math.pow(point.y - this.y, 2)
   }
+}
 
-  public draw(ctx: CanvasRenderingContext2D) {
+export class Circle {
+  static from(position: Point, radius: number) {
+    return new Circle(position, radius)
+  }
+  private constructor(public position: Point, public radius: number) {}
+
+  public draw(ctx: CanvasRenderingContext2D, shapeStyles: ShapeStyles = {}) {
+    shapeStyles = {
+      stroke: 'black',
+      ...shapeStyles,
+    }
     ctx.beginPath()
-    ctx.arc(this.x, this.y, 15, 0, 2 * Math.PI)
-    ctx.globalAlpha = 0.3
-    ctx.fill()
-    ctx.globalAlpha = 1
-    ctx.stroke()
+    ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI)
+    if (shapeStyles.fill) {
+      ctx.fillStyle = shapeStyles.fill
+      ctx.fill()
+    }
+    if (shapeStyles.stroke) {
+      ctx.strokeStyle = shapeStyles.stroke
+      ctx.lineWidth = shapeStyles.strokeWidth || 1
+      ctx.stroke()
+    }
   }
 }
 
@@ -152,9 +168,9 @@ export class Triangle {
     }
     if (textStyles.color) {
       ctx.fillStyle = textStyles.color
-      ctx.fillText(`a`, this.a.x, this.a.y)
-      ctx.fillText(`b`, this.b.x, this.b.y)
-      ctx.fillText(`c`, this.c.x, this.c.y)
+      ctx.fillText('A', this.a.x, this.a.y)
+      ctx.fillText('B', this.b.x, this.b.y)
+      ctx.fillText('C', this.c.x, this.c.y)
     }
     return this
   }

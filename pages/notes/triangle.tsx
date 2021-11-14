@@ -2,7 +2,9 @@ import { useRef, useState } from 'react'
 import { Canvas } from '../../components/canvas'
 import Container from '../../components/container'
 import Layout from '../../components/layout'
-import { Point, Triangle } from '../../lib/geometry'
+import { Circle, getAngleBetween, Point, Triangle } from '../../lib/geometry'
+
+const POINT_TOUCH_RADIUS = 20
 
 function useForceUpdate() {
   const [, setTick] = useState(0)
@@ -17,14 +19,9 @@ function useMutable<T>(data: T) {
 const TriangleNote: React.FC = () => {
   const [triangles, forceUpdate] = useMutable<Triangle[]>([
     Triangle.from(
-      Point.from(20, 30),
-      Point.from(120, 30),
-      Point.from(120, 130),
-    ),
-    Triangle.from(
-      Point.from(220, 150),
-      Point.from(280, 310),
-      Point.from(30, 280),
+      Point.from(190, 55),
+      Point.from(240, 235),
+      Point.from(30, 180),
     ),
   ])
 
@@ -57,7 +54,7 @@ const TriangleNote: React.FC = () => {
         const points = [triangle.a, triangle.b, triangle.c]
         targetPoint = points.find((point) => {
           const distance = point.squareDistanceTo(Point.from(x, y))
-          return distance < 15 ** 2
+          return distance < POINT_TOUCH_RADIUS * POINT_TOUCH_RADIUS
         })
         if (targetPoint) {
           break
@@ -108,7 +105,7 @@ const TriangleNote: React.FC = () => {
         const points = [triangle.a, triangle.b, triangle.c]
         targetPoint = points.find((point) => {
           const distance = point.squareDistanceTo(Point.from(x, y))
-          return distance < 400
+          return distance < POINT_TOUCH_RADIUS * POINT_TOUCH_RADIUS
         })
         if (targetPoint) {
           break
@@ -131,7 +128,10 @@ const TriangleNote: React.FC = () => {
     })
 
     if (hoveredPoint) {
-      hoveredPoint.draw(ctx)
+      Circle.from(hoveredPoint, POINT_TOUCH_RADIUS).draw(ctx, {
+        strokeWidth: 2,
+        stroke: 'black',
+      })
     }
 
     return () => {
@@ -146,8 +146,67 @@ const TriangleNote: React.FC = () => {
     <Layout>
       <Container>
         <h1 className="sm:text-4xl sm:mb-8 text-3xl mb-6">Triangle</h1>
-        <div className={hoveredPoint ? 'cursor-move' : undefined}>
-          <Canvas width={300} height={320} draw={draw} />
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className={hoveredPoint ? 'cursor-move' : undefined}>
+            <Canvas width={300} height={320} draw={draw} />
+          </div>
+          <div>
+            {triangles.map((triangle, idx) => (
+              <div key={idx}>
+                <h3 className="text-xl font-bold mb-4">Triangle {idx + 1}</h3>
+
+                <h4 className="text-base font-bold mb-2">Points</h4>
+                <ul className="mb-4 font-mono">
+                  <li>
+                    A: ({triangle.a.x.toFixed(2)}
+                    {', '}
+                    {triangle.a.y.toFixed(2)})
+                  </li>
+                  <li>
+                    B: ({triangle.b.x.toFixed(2)}
+                    {', '}
+                    {triangle.b.y.toFixed(2)})
+                  </li>
+                  <li>
+                    C: ({triangle.c.x.toFixed(2)}
+                    {', '}
+                    {triangle.c.y.toFixed(2)})
+                  </li>
+                </ul>
+
+                <h4 className="text-base font-bold mb-2">Angles</h4>
+                <ul className="font-mono">
+                  <li>
+                    ∡BAC:{' '}
+                    {getAngleBetween(
+                      triangle.b,
+                      triangle.a,
+                      triangle.c,
+                    ).deg.toFixed(2)}
+                    °
+                  </li>
+                  <li>
+                    ∡ABC:{' '}
+                    {getAngleBetween(
+                      triangle.a,
+                      triangle.b,
+                      triangle.c,
+                    ).deg.toFixed(2)}
+                    °
+                  </li>
+                  <li>
+                    ∡ACB:{' '}
+                    {getAngleBetween(
+                      triangle.a,
+                      triangle.c,
+                      triangle.b,
+                    ).deg.toFixed(2)}
+                    °
+                  </li>
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
       </Container>
     </Layout>
