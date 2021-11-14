@@ -3,6 +3,7 @@ import { ShapeStyles } from './ShapeStyles'
 import { TextStyles } from './TextStyles'
 import { Point } from './Point'
 import { LineSegment } from './LineSegment'
+import { Angle } from './Angle'
 
 export class Triangle {
   static from(a: Point, b: Point, c: Point): Triangle {
@@ -33,16 +34,20 @@ export class Triangle {
     return this
   }
 
-  drawAngles(ctx: CanvasRenderingContext2D, shapeStyles: ShapeStyles = {}) {
+  drawAngles(
+    ctx: CanvasRenderingContext2D,
+    shapeStyles: ShapeStyles = {},
+    textStyles: TextStyles = {},
+  ) {
     shapeStyles = {
       fill: 'pink',
       stroke: 'red',
       ...shapeStyles,
     }
 
-    this.drawAngle(ctx, this.a, this.b, this.c, shapeStyles)
-    this.drawAngle(ctx, this.b, this.c, this.a, shapeStyles)
-    this.drawAngle(ctx, this.c, this.a, this.b, shapeStyles)
+    this.drawAngle(ctx, this.a, this.b, this.c, shapeStyles, textStyles)
+    this.drawAngle(ctx, this.b, this.c, this.a, shapeStyles, textStyles)
+    this.drawAngle(ctx, this.c, this.a, this.b, shapeStyles, textStyles)
 
     return this
   }
@@ -53,6 +58,7 @@ export class Triangle {
     b: Point,
     c: Point,
     shapeStyles: ShapeStyles,
+    textStyles: TextStyles,
   ) {
     const ba = LineSegment.from(b, a)
     const bc = LineSegment.from(b, c)
@@ -66,9 +72,15 @@ export class Triangle {
       startAngle = t
     }
 
+    if (endAngle < startAngle) {
+      endAngle += Math.PI * 2
+    }
+
+    const radius = (ba.length + bc.length) / 10
+
     ctx.beginPath()
     ctx.moveTo(b.x, b.y)
-    ctx.arc(b.x, b.y, (ba.length + bc.length) / 10, startAngle, endAngle)
+    ctx.arc(b.x, b.y, radius, startAngle, endAngle)
     if (shapeStyles.fill) {
       ctx.fillStyle = shapeStyles.fill
       ctx.fill()
@@ -77,6 +89,31 @@ export class Triangle {
       ctx.strokeStyle = shapeStyles.stroke
       ctx.lineWidth = shapeStyles.strokeWidth || 1
       ctx.stroke()
+    }
+
+    const midAngle = (endAngle + startAngle) / 2
+
+    textStyles = {
+      fontSize: '11px',
+      fontFamily: 'Arial',
+      color: 'black',
+      ...textStyles,
+    }
+
+    const delta = radius + 10
+    const x = b.x + Math.cos(midAngle) * delta
+    const y = b.y + Math.sin(midAngle) * delta
+    const text = Angle.fromRad(endAngle - startAngle).deg.toFixed(0) + '°'
+
+    ctx.beginPath()
+    if (textStyles.fontSize) {
+      ctx.font = `${textStyles.fontSize} ${textStyles.fontFamily ?? 'Arial'}`
+    }
+    if (textStyles.color) {
+      ctx.fillStyle = textStyles.color
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(text, x, y)
     }
   }
 
