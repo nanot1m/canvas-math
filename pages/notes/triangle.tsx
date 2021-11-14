@@ -2,7 +2,10 @@ import { useRef, useState } from 'react'
 import { Canvas } from '../../components/canvas'
 import Container from '../../components/container'
 import Layout from '../../components/layout'
-import { Circle, getAngleBetween, Point, Triangle } from '../../lib/geometry'
+import { getAngleBetween } from '../../lib/geometry'
+import { Point } from '../../lib/Point'
+import { Circle } from '../../lib/Circle'
+import { Triangle } from '../../lib/Triangle'
 
 const POINT_TOUCH_RADIUS = 20
 
