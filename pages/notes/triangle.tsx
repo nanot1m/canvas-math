@@ -74,9 +74,9 @@ const TriangleNote: React.FC = () => {
     canvas.addEventListener('mouseup', handleMouseUp)
 
     function handlePointerDown(e: PointerEvent) {
-      const { clientX, clientY } = e
-      const x = clientX - canvas.offsetLeft - window.scrollX
-      const y = clientY - canvas.offsetTop - window.scrollY
+      e.preventDefault()
+      const x = e.offsetX
+      const y = e.offsetY
 
       const { point: targetPoint, triangle: targetTriangle } =
         getHoveredObjects(x, y)
@@ -85,9 +85,8 @@ const TriangleNote: React.FC = () => {
       let prevY = y
       function handlePointerMove(e: PointerEvent) {
         e.preventDefault()
-        const { clientX, clientY } = e
-        const x = clientX - canvas.offsetLeft - window.scrollX
-        const y = clientY - canvas.offsetTop - window.scrollY
+        const x = e.offsetX
+        const y = e.offsetY
         const dx = x - prevX
         const dy = y - prevY
         if (targetPoint) {
@@ -121,9 +120,8 @@ const TriangleNote: React.FC = () => {
 
     function handlePointerMove(e: PointerEvent) {
       e.preventDefault()
-      const { clientX, clientY } = e
-      const x = clientX - canvas.offsetLeft - window.scrollX
-      const y = clientY - canvas.offsetTop - window.scrollY
+      const x = e.offsetX
+      const y = e.offsetY
 
       let targetPoint: Point | undefined
       let hoveredTriangle: Triangle | undefined
