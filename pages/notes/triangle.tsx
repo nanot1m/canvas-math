@@ -258,7 +258,7 @@ const TriangleNote: React.FC = () => {
           First let&apos;s define the points of the triangle. We can do this by
           creating 3 objects with an <b>x</b> and <b>y</b> property.
         </p>
-        <pre className="mb-2 border rounded p-2 bg-gray-50">
+        <pre className="mb-4 border rounded p-2 bg-gray-50">
           <code>
             {`
 const points = {
@@ -272,7 +272,7 @@ const points = {
           Now we draw lines between the points. We can do this by using method{' '}
           <code className="bg-gray-50 border rounded">ctx.lineTo(x, y)</code>.
         </p>
-        <pre className="mb-2 border rounded p-2 bg-gray-50">
+        <pre className="mb-4 border rounded p-2 bg-gray-50">
           <code>
             {`
 ctx.beginPath();
@@ -288,7 +288,7 @@ ctx.lineTo(points.a.x, points.a.y);
           <code className="bg-gray-50 border rounded">ctx.stroke()</code> to
           draw strokes of the lines
         </p>
-        <div>
+        <div className="mb-8">
           <iframe
             src="https://codesandbox.io/embed/shy-firefly-uk40s?fontsize=14&hidenavigation=1&theme=light&codemirror=1&hidenavigation=1"
             className="w-full border rounded"
@@ -302,6 +302,24 @@ ctx.lineTo(points.a.x, points.a.y);
             sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
           />
         </div>
+      </Container>
+      <Container>
+        <h2 className="sm:text-3xl sm:mb-6 text-2xl mb-4">
+          Drawing angles inside the triangle
+        </h2>
+
+        <iframe
+          src="https://codesandbox.io/embed/shy-firefly-uk40s?codemirror=1&fontsize=14&hidenavigation=1&module=%2Fsrc%2Ftriangle-angles.ts&moduleview=1&theme=dark"
+          className="w-full border rounded"
+          style={{
+            width: '100%',
+            height: '500px',
+            overflow: 'hidden',
+          }}
+          title="shy-firefly-uk40s"
+          allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+          sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+        />
       </Container>
     </Layout>
   )
