@@ -183,7 +183,7 @@ const TriangleNote: React.FC = () => {
     <Layout>
       <Container>
         <h1 className="sm:text-4xl sm:mb-8 text-3xl mb-6">Triangle</h1>
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-4 mb-8">
           <div
             className={
               hoveredPoint || hoveredTriangle ? 'cursor-move' : undefined
@@ -248,6 +248,59 @@ const TriangleNote: React.FC = () => {
               </div>
             ))}
           </div>
+        </div>
+      </Container>
+      <Container>
+        <h2 className="sm:text-3xl sm:mb-6 text-2xl mb-4">
+          Drawing the triangle
+        </h2>
+        <p className="text-base mb-2">
+          First let&apos;s define the points of the triangle. We can do this by
+          creating 3 objects with an <b>x</b> and <b>y</b> property.
+        </p>
+        <pre className="mb-2 border rounded p-2 bg-gray-50">
+          <code>
+            {`
+const points = {
+  a: { x: 30, y: 20 },
+  b: { x: 260, y: 150 },
+  c: { x: 80, y: 270 }
+};`.trim()}
+          </code>
+        </pre>
+        <p className="mb-2">
+          Now we draw lines between the points. We can do this by using method{' '}
+          <code className="bg-gray-50 border rounded">ctx.lineTo(x, y)</code>.
+        </p>
+        <pre className="mb-2 border rounded p-2 bg-gray-50">
+          <code>
+            {`
+ctx.beginPath();
+ctx.moveTo(points.a.x, points.a.y);
+ctx.lineTo(points.b.x, points.b.y);
+ctx.lineTo(points.c.x, points.c.y);
+ctx.lineTo(points.a.x, points.a.y);
+`.trim()}
+          </code>
+        </pre>
+        <p className="mb-4">
+          And finally we need to call{' '}
+          <code className="bg-gray-50 border rounded">ctx.stroke()</code> to
+          draw strokes of the lines
+        </p>
+        <div>
+          <iframe
+            src="https://codesandbox.io/embed/shy-firefly-uk40s?fontsize=14&hidenavigation=1&theme=light&codemirror=1&hidenavigation=1"
+            className="w-full border rounded"
+            style={{
+              width: '100%',
+              height: '500px',
+              overflow: 'hidden',
+            }}
+            title="shy-firefly-uk40s"
+            allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+            sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+          />
         </div>
       </Container>
     </Layout>
