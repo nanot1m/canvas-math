@@ -109,6 +109,7 @@ const TriangleNote: React.FC = () => {
         canvas.removeEventListener('pointerup', handlePointerUp)
         if (!isMouse) {
           setHoveredPoint(null)
+          setHoveredTriangle(null)
         }
       }
 
